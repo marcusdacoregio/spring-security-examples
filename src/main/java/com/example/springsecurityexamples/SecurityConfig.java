@@ -32,7 +32,6 @@ public class SecurityConfig {
 						.anyRequest().authenticated()
 				)
 				.httpBasic(Customizer.withDefaults())
-				.formLogin(Customizer.withDefaults())
 				.exceptionHandling((exceptions) -> exceptions
 						.accessDeniedHandler(new MyHandler())
 				);
