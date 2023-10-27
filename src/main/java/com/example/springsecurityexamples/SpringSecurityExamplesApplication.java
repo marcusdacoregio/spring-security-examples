@@ -14,11 +14,16 @@ public class SpringSecurityExamplesApplication {
 	}
 
 	@RestController
-	static class Controller {
+	class Controller extends Resource {
+
+
+	}
+
+	abstract class Resource {
 
 		@GetMapping("/")
 		@PreAuthorize("hasRole('ADMIN')")
-		String hello() {
+		public String hello() {
 			return "hello";
 		}
 
