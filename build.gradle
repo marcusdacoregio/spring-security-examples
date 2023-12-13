@@ -12,6 +12,7 @@ java {
 }
 
 ext['spring-security.version'] = '6.2.0'
+//ext['reactor-bom.version'] = '2022.0.14' uncommenting this makes the test pass
 
 repositories {
 	mavenCentral()

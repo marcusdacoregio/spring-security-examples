@@ -6,3 +6,4 @@ spring:
 
 logging.level:
   org.springframework.web: TRACE
+  org.springframework.security: TRACE
