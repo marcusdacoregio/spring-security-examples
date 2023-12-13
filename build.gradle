@@ -11,8 +11,9 @@ java {
 	sourceCompatibility = '17'
 }
 
+ext['spring-security.version'] = '6.2.0'
+
 repositories {
-	mavenLocal()
 	mavenCentral()
 }
 
