@@ -8,6 +8,7 @@ import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.MatcherSecurityWebFilterChain;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.WebFilterChainProxy;
 import org.springframework.security.web.server.authorization.AuthorizationWebFilter;
 import org.springframework.security.web.server.authorization.ExceptionTranslationWebFilter;
 import org.springframework.security.web.server.context.ReactorContextWebFilter;
@@ -25,15 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@EnableWebFluxSecurity
 public class SecurityConfig {
 
 	@Bean
-	SecurityWebFilterChain appSecurity() {
+	WebFilterChainProxy appSecurity() {
 		List<WebFilter> sortedWebFilters = new ArrayList<>();
 		sortedWebFilters.add(new ReactorContextWebFilter(new WebSessionServerSecurityContextRepository()));
 		sortedWebFilters.add(new AuthorizationWebFilter(AuthenticatedReactiveAuthorizationManager.authenticated()));
-		return new MatcherSecurityWebFilterChain(ServerWebExchangeMatchers.anyExchange(), sortedWebFilters);
+		return new WebFilterChainProxy(new MatcherSecurityWebFilterChain(ServerWebExchangeMatchers.anyExchange(), sortedWebFilters));
 	}
 
 }
