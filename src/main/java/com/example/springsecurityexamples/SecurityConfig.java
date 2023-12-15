@@ -6,46 +6,34 @@ import org.springframework.security.authorization.AuthenticatedReactiveAuthoriza
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.MatcherSecurityWebFilterChain;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authorization.AuthorizationWebFilter;
+import org.springframework.security.web.server.authorization.ExceptionTranslationWebFilter;
+import org.springframework.security.web.server.context.ReactorContextWebFilter;
+import org.springframework.security.web.server.context.SecurityContextServerWebExchangeWebFilter;
+import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
+import org.springframework.security.web.server.savedrequest.ServerRequestCacheWebFilter;
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
 	@Bean
-	SecurityWebFilterChain appSecurity(ServerHttpSecurity http) {
-		http
-				.headers(h -> h.disable())
-				.requestCache(r -> r.disable())
-				.logout(l -> l.disable())
-				.csrf((csrf) -> csrf.disable()) // commenting this line makes the test pass
-				.addFilterAt(new AuthorizationWebFilter(AuthenticatedReactiveAuthorizationManager.authenticated()), SecurityWebFiltersOrder.AUTHORIZATION);
-//				.addFilterAt(new TestWebFilter(), SecurityWebFiltersOrder.CSRF);
-//				.addFilterAt(new CsrfWebFilter(), SecurityWebFiltersOrder.CSRF); // uncommenting this line makes the test pass
-		return http.build();
+	SecurityWebFilterChain appSecurity() {
+		List<WebFilter> sortedWebFilters = new ArrayList<>();
+		sortedWebFilters.add(new ReactorContextWebFilter(new WebSessionServerSecurityContextRepository()));
+		sortedWebFilters.add(new AuthorizationWebFilter(AuthenticatedReactiveAuthorizationManager.authenticated()));
+		return new MatcherSecurityWebFilterChain(ServerWebExchangeMatchers.anyExchange(), sortedWebFilters);
 	}
-
-static class TestWebFilter implements WebFilter {
-
-	@Override
-	public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-//		return Mono.empty().switchIfEmpty(chain.filter(exchange)).then(); // this line succeeds
-			return chain.filter(exchange); // this line makes the test fail
-//			return this.requireCsrfProtectionMatcher.matches(exchange)
-//					.filter(ServerWebExchangeMatcher.MatchResult::isMatch)
-//					.filter((matchResult) -> !exchange.getAttributes().containsKey(CsrfToken.class.getName()))
-//					.flatMap((m) -> validateToken(exchange))
-////					.flatMap((m) -> chain.filter(exchange))
-//					.switchIfEmpty(chain.filter(exchange));
-	}
-
-}
-
-
 
 }
