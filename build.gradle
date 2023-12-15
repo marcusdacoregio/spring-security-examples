@@ -11,11 +11,20 @@ java {
 	sourceCompatibility = '17'
 }
 
-ext['spring-security.version'] = '6.2.0'
-//ext['reactor-bom.version'] = '2022.0.14' uncommenting this makes the test pass
+// Spring Boot 3.2.0 dependency versions
+//Spring Security 6.2.0
+//Spring Framework 6.1.1
+//Reactor Bom 2023.0.0 reactor core 3.6.0
+ext['reactor-bom.version'] = '2023.0.0-RC1'
 
 repositories {
 	mavenCentral()
+	maven {
+		url 'https://repo.spring.io/snapshot'
+	}
+	maven {
+		url 'https://repo.spring.io/milestone'
+	}
 }
 
 dependencies {
