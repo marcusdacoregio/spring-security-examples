@@ -15,7 +15,7 @@ java {
 //Spring Security 6.2.0
 //Spring Framework 6.1.1
 //Reactor Bom 2023.0.0 reactor core 3.6.0
-//ext['reactor-bom.version'] = '2023.0.0-RC1'
+//ext['reactor-bom.version'] = '2023.0.0-M3'
 
 repositories {
 	mavenCentral()
